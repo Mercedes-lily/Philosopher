@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initialize.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vst-pier <vst-pier@student.42.fr>          +#+  +:+       +#+        */
+/*   By: valerie <valerie@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 11:21:48 by vst-pier          #+#    #+#             */
-/*   Updated: 2023/11/10 14:25:11 by vst-pier         ###   ########.fr       */
+/*   Updated: 2023/11/13 16:43:17 by valerie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,13 @@ t_philo	*initialize_philo(t_infos *infos, int no)
 	philo->philo_state = 0;
 	if (pthread_mutex_init(&philo->fork, NULL) != 0)
 		return (free(infos), NULL);
+	if (pthread_mutex_init(&philo->start, NULL) != 0)
+		return (free(infos), NULL);
+	if (pthread_mutex_init(&philo->end, NULL) != 0)
+		return (free(infos), NULL);
 	philo->fork_state = 0;
 	philo->finished = 0;
-	philo->meal_eaten = 0;
+	philo->meal_eaten = -1;
 	philo->infos = infos;
 	philo->right_philo = NULL;
 	philo->my_turn = 0;
@@ -85,11 +89,15 @@ t_philo	*create_philo(t_infos *infos)
 
 void	time_to_start(t_philo *philo)
 {
-	if (pthread_mutex_lock(&philo->start) == 0)
+	while (philo->meal_eaten == -1)
 	{
-		if (philo->infos->start_time == 0)
-			philo->infos->start_time = find_time();
-			philo->last_meal = philo->infos->start_time;
-		pthread_mutex_unlock(&philo->start);
+		if (pthread_mutex_lock(&philo->start) == 0)
+		{
+			philo->meal_eaten = 0;
+			if (philo->infos->start_time == 0)
+				philo->infos->start_time = find_time();
+			pthread_mutex_unlock(&philo->start);
+		}
 	}
+	philo->last_meal = 0;
 }

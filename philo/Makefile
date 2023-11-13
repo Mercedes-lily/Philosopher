@@ -2,7 +2,7 @@ NAME = philo
 LIBFT = $(LIB_DIR)/libft.a
 
 CC = gcc
-CFLAGS = -Wall -Werror -Wextra -g -fsanitize=address
+CFLAGS = -Wall -Werror -Wextra #-g -fsanitize=thread
 
 SRC_DIR = src/
 OBJ_DIR = obj/

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vst-pier <vst-pier@student.42.fr>          +#+  +:+       +#+        */
+/*   By: valerie <valerie@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 11:21:48 by vst-pier          #+#    #+#             */
-/*   Updated: 2023/11/10 14:29:49 by vst-pier         ###   ########.fr       */
+/*   Updated: 2023/11/12 11:16:49 by valerie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	ft_positive_atoi(const char *str)
 {
 	int		i;
-	long	nb;
+	unsigned long	nb;
 
 	i = 0;
 	nb = 0;
@@ -27,34 +27,37 @@ int	ft_positive_atoi(const char *str)
 		nb = nb + str[i] - 48;
 		i++;
 	}
-	if (nb > MAX_INPUT)
-		return (printf("Bigger then 2147483647"), -2);
+	if (nb > INT_MAX)
+		return (printf("Bigger then 2147483647\n"), -2);
 	return (nb);
 }
 
 void	clear_philo(t_philo *philo)
 {
 	t_philo	*philo_copy;
+	int		i;
 
-	while (philo)
+	i = 1;
+	while (i < philo->infos->number_of_philosophers)
 	{
 		pthread_mutex_destroy(&philo->fork);
 		philo_copy = philo;
-		if (philo->right_philo)
-			philo = philo->right_philo;
+		philo = philo->right_philo;
 		free(philo_copy);
 		philo_copy = NULL;
+		i++;
 	}
+	pthread_mutex_destroy(&philo->fork);
+	free(philo);
+	philo = NULL;
 }
 
-long long	find_time(void)
-{
-	struct timeval	*tv;
-	long long		micro_time;
 
-	tv = NULL;
-	gettimeofday(tv, NULL);
-	micro_time = (((long long)tv->tv_sec * 1000)
-			+ (long long)tv->tv_usec / 1000);
-	return (micro_time);
+
+unsigned long long	find_time(void)
+{
+	struct timeval		tv;
+
+	gettimeofday(&tv, NULL);
+	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
