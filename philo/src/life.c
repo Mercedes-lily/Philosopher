@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   life.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: valerie <valerie@student.42.fr>            +#+  +:+       +#+        */
+/*   By: vst-pier <vst-pier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 11:21:48 by vst-pier          #+#    #+#             */
-/*   Updated: 2023/11/13 16:46:52 by valerie          ###   ########.fr       */
+/*   Updated: 2023/11/14 12:48:05 by vst-pier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ static void	time_to_take_the_fork(t_philo *philo)
 				&& philo->infos->dead_philo == 0)
 			{
 				current_time = find_time() - philo->infos->start_time;
-				printf("%lld %d has taken a fork\n",
-					current_time, philo->no);
+				printf("%lld %d has taken a fork\n", current_time, philo->no);
+				printf("%lld %d has taken a fork\n", current_time, philo->no);
 				printf("%lld %d is eating\n", current_time, philo->no);
 				philo->fork_state = 1;
 				philo->my_turn = 1;
@@ -61,26 +61,28 @@ void	time_to_think(t_philo *philo)
 void	time_to_eat(t_philo *philo)
 {
 	unsigned long long	current_time;
-	unsigned long long	time;
+	unsigned long long	clean;
+	unsigned long long	death;
 
-	time = find_time();
-	current_time = time - philo->infos->start_time;
+	current_time = find_time() - philo->infos->start_time;
+	clean = current_time + (unsigned long long)philo->infos->time_to_eat;
+	death = philo->last_meal + (unsigned long long)philo->infos->time_to_die;
 	if (philo->infos->dead_philo == 1)
 		return ;
-	if (current_time + (unsigned long long)philo->infos->time_to_eat
-		> philo->last_meal + (unsigned long long)philo->infos->time_to_die)
+	if (clean > death)
 	{
 		usleep(((int)current_time + philo->infos->time_to_eat
 		- (int)philo->last_meal - philo->infos->time_to_die) * 1000);
-		time_to_die(philo, (int)philo->last_meal + philo->infos->time_to_die);
+		time_to_die(philo, (int)death);
 	}
 	if (philo->infos->dead_philo != 0)
 		return ;
 	else
 	{
 		philo->meal_eaten++;
-		usleep(philo->infos->time_to_eat * 1000);
-		philo->last_meal = current_time + philo->infos->time_to_eat;
+		while(current_time < clean)
+			current_time = find_time() - philo->infos->start_time;
+		philo->last_meal = current_time + (unsigned long long)philo->infos->time_to_eat;
 		if (philo->meal_eaten == philo->infos->must_eat)
 			philo->finished = 1;
 		while (philo->my_turn == 1)
@@ -98,19 +100,22 @@ void	time_to_eat(t_philo *philo)
 void	time_to_sleep(t_philo *philo)
 {
 	unsigned long long	current_time;
-	unsigned long long	time;
+	unsigned long long	wake_up;
+	unsigned long long	death;
 
 	if (philo->infos->dead_philo == 1)
 		return ;
-	time = find_time();
-	current_time = time - philo->infos->start_time;
-	if (current_time + (unsigned long long)philo->infos->time_to_sleep
-		> philo->last_meal + (unsigned long long)philo->infos->time_to_die)
-		time_to_die(philo, ((int)philo->last_meal + philo->infos->time_to_die));
+	current_time = find_time() - philo->infos->start_time;
+	wake_up = current_time + (unsigned long long)philo->infos->time_to_sleep;
+	death = philo->last_meal + (unsigned long long)philo->infos->time_to_die;
+	if (wake_up > death)
+		time_to_die(philo, ((int)death));
 	else
 	{
-		printf("%lld %d is sleeping\n", current_time, philo->no);
-		usleep((philo->infos->time_to_sleep) * 1000);
+		if(philo->finished == 0)
+			printf("%lld %d is sleeping\n", current_time, philo->no);
+		while(current_time < wake_up)
+			current_time = find_time() - philo->infos->start_time;
 	}
 }
 

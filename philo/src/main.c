@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: valerie <valerie@student.42.fr>            +#+  +:+       +#+        */
+/*   By: vst-pier <vst-pier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 11:21:48 by vst-pier          #+#    #+#             */
-/*   Updated: 2023/11/12 16:43:53 by valerie          ###   ########.fr       */
+/*   Updated: 2023/11/14 12:50:01 by vst-pier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,21 @@ void	*routine(void *arg)
 			time_to_sleep(philo);
 	}
 	return (0);
+}
+
+/*void	*routine1philo(void *arg)
+{
+void	*routine(void *arg)
+{
+	t_philo	*philo;
+
+	philo = (t_philo *)arg;
+	time_to_start(philo);
+	printf("%lld %d has taken a fork\n", current_time, philo->no);
+	return (0);
+}*/
+	
+	
 }
 
 int	main(int argc, char **argv)
@@ -59,15 +74,26 @@ int	main(int argc, char **argv)
 			n ++;
 		}
 		n = 1;
-		while (n <= infos->number_of_philosophers)
+		if (infos->number_of_philosophers == 1)
 		{
 			if (pthread_join(philo->pt_philo, NULL) != 0)
 			{
 				clear_philo(philo);
 				return (printf("Impossible to wait for the thread"), 1);
 			}
-			philo = philo->right_philo;
-			n ++;
+		}
+		else
+		{
+			while (n <= infos->number_of_philosophers)
+			{
+				if (pthread_join(philo->pt_philo, NULL) != 0)
+				{
+					clear_philo(philo);
+					return (printf("Impossible to wait for the thread"), 1);
+				}
+				philo = philo->right_philo;
+				n ++;
+			}
 		}
 		if(philo->infos->dead_philo != 0)
 			printf("%lld %d died\n", infos->time_of_death, infos->dead_philo);
