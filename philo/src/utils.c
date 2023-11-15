@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: valerie <valerie@student.42.fr>            +#+  +:+       +#+        */
+/*   By: vst-pier <vst-pier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 11:21:48 by vst-pier          #+#    #+#             */
-/*   Updated: 2023/11/12 11:16:49 by valerie          ###   ########.fr       */
+/*   Updated: 2023/11/15 12:05:57 by vst-pier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	ft_positive_atoi(const char *str)
 {
-	int		i;
+	int				i;
 	unsigned long	nb;
 
 	i = 0;
@@ -51,8 +51,6 @@ void	clear_philo(t_philo *philo)
 	free(philo);
 	philo = NULL;
 }
-
-
 
 unsigned long long	find_time(void)
 {

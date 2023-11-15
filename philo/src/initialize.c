@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initialize.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: valerie <valerie@student.42.fr>            +#+  +:+       +#+        */
+/*   By: vst-pier <vst-pier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 11:21:48 by vst-pier          #+#    #+#             */
-/*   Updated: 2023/11/13 16:43:17 by valerie          ###   ########.fr       */
+/*   Updated: 2023/11/15 12:05:23 by vst-pier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,20 @@ t_infos	*initialize_infos(char **argv)
 		|| infos->time_to_eat == -2 || infos->time_to_sleep == -2
 		|| infos->must_eat == -2)
 		return (NULL);
-	infos->dead_philo = 0;
-	infos->time_of_death = -1;
 	infos->start_time = 0;
 	return (infos);
+}
+
+t_god	*initialize_god(t_philo *philo)
+{
+	t_god	*god;
+
+	god = ft_calloc(1, sizeof(t_god));
+	god->philo = philo;
+	god->first_death_philo = 0;
+	god->time_of_death = 0;
+	god->nb_of_death_philosophers = 0;
+	return (god);
 }
 
 t_philo	*initialize_philo(t_infos *infos, int no)
@@ -52,16 +62,13 @@ t_philo	*initialize_philo(t_infos *infos, int no)
 		return (free(infos), NULL);
 	if (pthread_mutex_init(&philo->start, NULL) != 0)
 		return (free(infos), NULL);
-	if (pthread_mutex_init(&philo->end, NULL) != 0)
-		return (free(infos), NULL);
-	philo->fork_state = 0;
 	philo->finished = 0;
 	philo->meal_eaten = -1;
 	philo->infos = infos;
 	philo->right_philo = NULL;
-	philo->my_turn = 0;
 	philo->thinking = 0;
 	philo->last_meal = 0;
+	philo->time_of_death = 0;
 	return (philo);
 }
 
