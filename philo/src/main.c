@@ -6,7 +6,7 @@
 /*   By: vst-pier <vst-pier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 11:21:48 by vst-pier          #+#    #+#             */
-/*   Updated: 2023/11/15 12:06:31 by vst-pier         ###   ########.fr       */
+/*   Updated: 2023/11/16 16:39:59 by vst-pier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,12 @@ void	*routine(void *arg)
 	time_to_start(philo);
 	if (philo->infos->must_eat == 0)
 		philo->finished = 1;
+	if (philo->no % 2 == 0)
+		usleep(15000);
 	while (philo->philo_state == 0 && philo->finished == 0)
 	{
 		time_to_eat(philo);
 		time_to_sleep(philo);
-		time_to_think(philo);
 	}
 	return (0);
 }
@@ -33,7 +34,7 @@ int	life_of_philosopher(t_philo *philo, t_infos *infos)
 {
 	int	n;
 
-	n = 0;
+	n = 1;
 	while (n <= infos->number_of_philosophers)
 	{
 		if (pthread_create(&philo->pt_philo, NULL, &routine, philo) != 0)
@@ -44,6 +45,7 @@ int	life_of_philosopher(t_philo *philo, t_infos *infos)
 		philo = philo->right_philo;
 		n ++;
 	}
+	n = 1;
 	while (n <= infos->number_of_philosophers)
 	{
 		if (pthread_join(philo->pt_philo, NULL) != 0)
@@ -55,6 +57,10 @@ int	life_of_philosopher(t_philo *philo, t_infos *infos)
 		n ++;
 	}
 	return (0);
+}
+
+void	god_function(void)
+{
 }
 
 int	main(int argc, char **argv)
@@ -78,7 +84,7 @@ int	main(int argc, char **argv)
 			return (1);
 		if (life_of_philosopher(philo, infos) == 1)
 			return (1);
-		//mettre la fonction du god ici
+		god_function();
 		if (god->first_death_philo != 0)
 			printf("%lld %d died\n", god->time_of_death, god->first_death_philo);
 		clear_philo(philo);

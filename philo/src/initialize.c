@@ -6,7 +6,7 @@
 /*   By: vst-pier <vst-pier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 11:21:48 by vst-pier          #+#    #+#             */
-/*   Updated: 2023/11/15 12:05:23 by vst-pier         ###   ########.fr       */
+/*   Updated: 2023/11/16 14:55:20 by vst-pier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,20 +75,16 @@ t_philo	*initialize_philo(t_infos *infos, int no)
 t_philo	*create_philo(t_infos *infos)
 {
 	t_philo	*philo;
-	t_philo	*next;
 	t_philo	*head;
 	int		no;
 
 	no = 1;
-	philo = initialize_philo(infos, no);
+	philo = initialize_philo(infos, no++);
 	head = philo;
-	no++;
 	while (no <= infos->number_of_philosophers)
 	{
-		next = initialize_philo(infos, no);
-		philo->right_philo = next;
+		philo->right_philo = initialize_philo(infos, no++);
 		philo = philo->right_philo;
-		no++;
 	}
 	philo->right_philo = head;
 	return (head);
