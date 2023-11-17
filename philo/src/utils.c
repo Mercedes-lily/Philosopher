@@ -6,7 +6,7 @@
 /*   By: vst-pier <vst-pier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 11:21:48 by vst-pier          #+#    #+#             */
-/*   Updated: 2023/11/16 16:42:06 by vst-pier         ###   ########.fr       */
+/*   Updated: 2023/11/17 10:28:20 by vst-pier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,10 +78,10 @@ void	*ft_calloc(size_t count, size_t size)
 	}
 	return (copy);
 }
+
 int	ft_isdigit(int c)
 {
 	if (c >= '0' && c <= '9')
 		return (c);
 	return (0);
 }
-

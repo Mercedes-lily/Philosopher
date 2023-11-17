@@ -6,7 +6,7 @@
 /*   By: vst-pier <vst-pier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 11:21:48 by vst-pier          #+#    #+#             */
-/*   Updated: 2023/11/16 14:55:20 by vst-pier         ###   ########.fr       */
+/*   Updated: 2023/11/17 17:05:59 by vst-pier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,19 +37,27 @@ t_infos	*initialize_infos(char **argv)
 	return (infos);
 }
 
-t_god	*initialize_god(t_philo *philo)
+t_god	*initialize_god(t_infos *infos)
 {
 	t_god	*god;
 
 	god = ft_calloc(1, sizeof(t_god));
-	god->philo = philo;
 	god->first_death_philo = 0;
 	god->time_of_death = 0;
-	god->nb_of_death_philosophers = 0;
+	if (pthread_mutex_init(&god->end, NULL) != 0)
+	{
+		free(infos);
+		return (NULL);
+	}
+	if (pthread_mutex_init(&infos->start, NULL) != 0)
+	{
+		free(infos);
+		return (NULL);
+	}
 	return (god);
 }
 
-t_philo	*initialize_philo(t_infos *infos, int no)
+t_philo	*initialize_philo(t_infos *infos, t_god *god, int no)
 {
 	t_philo	*philo;
 
@@ -59,9 +67,12 @@ t_philo	*initialize_philo(t_infos *infos, int no)
 	philo->no = no;
 	philo->philo_state = 0;
 	if (pthread_mutex_init(&philo->fork, NULL) != 0)
-		return (free(infos), NULL);
-	if (pthread_mutex_init(&philo->start, NULL) != 0)
-		return (free(infos), NULL);
+	{
+		free(philo);
+		free(god);
+		free(infos);
+		return (NULL);
+	}
 	philo->finished = 0;
 	philo->meal_eaten = -1;
 	philo->infos = infos;
@@ -69,21 +80,22 @@ t_philo	*initialize_philo(t_infos *infos, int no)
 	philo->thinking = 0;
 	philo->last_meal = 0;
 	philo->time_of_death = 0;
+	philo->god = god;
 	return (philo);
 }
 
-t_philo	*create_philo(t_infos *infos)
+t_philo	*create_philo(t_infos *infos, t_god *god)
 {
 	t_philo	*philo;
 	t_philo	*head;
 	int		no;
 
 	no = 1;
-	philo = initialize_philo(infos, no++);
+	philo = initialize_philo(infos, god, no++);
 	head = philo;
 	while (no <= infos->number_of_philosophers)
 	{
-		philo->right_philo = initialize_philo(infos, no++);
+		philo->right_philo = initialize_philo(infos, god, no++);
 		philo = philo->right_philo;
 	}
 	philo->right_philo = head;
@@ -94,13 +106,11 @@ void	time_to_start(t_philo *philo)
 {
 	while (philo->meal_eaten == -1)
 	{
-		if (pthread_mutex_lock(&philo->start) == 0)
-		{
-			philo->meal_eaten = 0;
-			if (philo->infos->start_time == 0)
-				philo->infos->start_time = find_time();
-			pthread_mutex_unlock(&philo->start);
-		}
+		pthread_mutex_lock(&philo->infos->start);
+		philo->meal_eaten = 0;
+		if (philo->infos->start_time == 0)
+			philo->infos->start_time = find_time();
+		pthread_mutex_unlock(&philo->infos->start);
 	}
 	philo->last_meal = 0;
 }
