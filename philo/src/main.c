@@ -6,7 +6,7 @@
 /*   By: vst-pier <vst-pier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 11:21:48 by vst-pier          #+#    #+#             */
-/*   Updated: 2023/11/17 17:15:48 by vst-pier         ###   ########.fr       */
+/*   Updated: 2023/11/21 13:03:11 by vst-pier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,13 @@ void	god_function(t_god *god, t_philo *philo)
 	pthread_mutex_unlock(&god->end);
 }
 
+void	free_all(t_philo *philo, t_infos *infos, t_god *god)
+{
+	clear_philo(philo);
+	free(infos);
+	free(god);
+}
+
 int	main(int argc, char **argv)
 {
 	t_infos	*infos;
@@ -112,9 +119,7 @@ int	main(int argc, char **argv)
 		god_function(god, philo);
 		if (god->first_death_philo != 0)
 			printf("%lld %d died\n", god->time_of_death, god->first_death_philo);
-		clear_philo(philo);
-		free(infos);
-		free(god);
+		free_all(philo, infos, god);
 	}
 	return (0);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: valerie <valerie@student.42.fr>            +#+  +:+       +#+        */
+/*   By: vst-pier <vst-pier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 11:21:48 by vst-pier          #+#    #+#             */
-/*   Updated: 2023/11/12 15:46:34 by valerie          ###   ########.fr       */
+/*   Updated: 2023/11/21 15:20:12 by vst-pier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ int	check_is_number(char **argv)
 
 void	check_death(t_philo *philo)
 {
-	unsigned long long	current_time;
-	unsigned long long	time;
+	t_ull	current_time;
+	t_ull	time;
 
 	time = find_time();
 	current_time = time - philo->infos->start_time;

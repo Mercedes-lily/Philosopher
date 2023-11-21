@@ -6,7 +6,7 @@
 /*   By: vst-pier <vst-pier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 11:21:48 by vst-pier          #+#    #+#             */
-/*   Updated: 2023/11/17 10:28:20 by vst-pier         ###   ########.fr       */
+/*   Updated: 2023/11/21 15:20:27 by vst-pier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	clear_philo(t_philo *philo)
 	philo = NULL;
 }
 
-unsigned long long	find_time(void)
+t_ull	find_time(void)
 {
 	struct timeval		tv;
 

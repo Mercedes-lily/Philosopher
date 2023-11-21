@@ -6,7 +6,7 @@
 /*   By: vst-pier <vst-pier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 11:21:48 by vst-pier          #+#    #+#             */
-/*   Updated: 2023/11/17 17:05:59 by vst-pier         ###   ########.fr       */
+/*   Updated: 2023/11/21 14:54:17 by vst-pier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ t_god	*initialize_god(t_infos *infos)
 	god = ft_calloc(1, sizeof(t_god));
 	god->first_death_philo = 0;
 	god->time_of_death = 0;
+	god->dead = 0;
 	if (pthread_mutex_init(&god->end, NULL) != 0)
 	{
 		free(infos);

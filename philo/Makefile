@@ -1,7 +1,7 @@
 NAME = philo
 
 CC = gcc
-CFLAGS = -Wall -Werror -Wextra #-g -fsanitize=thread
+CFLAGS = -Wall -Werror -Wextra -g #-fsanitize=thread
 
 SRC_DIR = src/
 OBJ_DIR = obj/
@@ -11,7 +11,8 @@ SRCS =	check.c \
 		initialize.c \
 		life.c \
 		main.c \
-		utils.c
+		utils.c \
+		utils2.c
 
 VPATH = $(SRC_DIR) $(INC_DIR) $(OBJ_DIR)
 
