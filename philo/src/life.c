@@ -6,7 +6,7 @@
 /*   By: vst-pier <vst-pier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 11:21:48 by vst-pier          #+#    #+#             */
-/*   Updated: 2023/11/21 15:24:38 by vst-pier         ###   ########.fr       */
+/*   Updated: 2023/11/23 15:08:55 by vst-pier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ void	eat2(t_philo *philo, t_ull now, t_ull clean)
 		pthread_mutex_unlock(&philo->god->end);
 		philo->finished = 1;
 	}
-	philo->last_meal = now;
 }
 
 void	eat(t_philo *philo, t_ull death)
@@ -39,6 +38,7 @@ void	eat(t_philo *philo, t_ull death)
 	{
 		printf("%lld %d has taken a fork\n", current_time, philo->no);
 		printf("%lld %d is eating\n", current_time, philo->no);
+		philo->last_meal = current_time;
 	}
 	if (clean > death)
 	{
@@ -56,7 +56,7 @@ void	time_to_eat(t_philo *philo)
 
 	death = philo->last_meal + (t_ull)philo->infos->time_to_die;
 	pthread_mutex_lock(&philo->god->end);
-	if (philo->god->dead > 1)
+	if (philo->god->dead >= 1)
 		philo->philo_state = 1;
 	pthread_mutex_unlock(&philo->god->end);
 	if (philo->philo_state == 1)
