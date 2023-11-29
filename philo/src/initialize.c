@@ -6,7 +6,7 @@
 /*   By: vst-pier <vst-pier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 11:21:48 by vst-pier          #+#    #+#             */
-/*   Updated: 2023/11/21 14:54:17 by vst-pier         ###   ########.fr       */
+/*   Updated: 2023/11/27 15:32:56 by vst-pier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,14 @@ t_god	*initialize_god(t_infos *infos)
 	}
 	if (pthread_mutex_init(&infos->start, NULL) != 0)
 	{
+		pthread_mutex_destroy(&god->end);
+		free(infos);
+		return (NULL);
+	}
+	if (pthread_mutex_init(&god->printf, NULL) != 0)
+	{
+		pthread_mutex_destroy(&god->end);
+		pthread_mutex_destroy(&infos->start);
 		free(infos);
 		return (NULL);
 	}

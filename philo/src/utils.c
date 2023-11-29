@@ -6,7 +6,7 @@
 /*   By: vst-pier <vst-pier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 11:21:48 by vst-pier          #+#    #+#             */
-/*   Updated: 2023/11/21 15:20:27 by vst-pier         ###   ########.fr       */
+/*   Updated: 2023/11/27 15:34:08 by vst-pier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,10 @@ void	clear_philo(t_philo *philo)
 		philo_copy = NULL;
 		i++;
 	}
+	pthread_mutex_destroy(&philo->fork);
+	pthread_mutex_destroy(&philo->god->end);
+	pthread_mutex_destroy(&philo->god->printf);
+	pthread_mutex_destroy(&philo->infos->start);
 	pthread_mutex_destroy(&philo->fork);
 	free(philo);
 	philo = NULL;

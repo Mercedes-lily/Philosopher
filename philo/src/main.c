@@ -6,7 +6,7 @@
 /*   By: vst-pier <vst-pier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 11:21:48 by vst-pier          #+#    #+#             */
-/*   Updated: 2023/11/21 13:03:11 by vst-pier         ###   ########.fr       */
+/*   Updated: 2023/11/29 14:13:33 by vst-pier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,47 @@ void	*routine(void *arg)
 	while (philo->philo_state == 0 && philo->finished == 0)
 	{
 		time_to_eat(philo);
+		pthread_mutex_lock(&philo->god->end);
 		if (philo->infos->number_of_philosophers == 1
 			|| philo->philo_state == 1
-			|| philo->finished == 1)
+			|| philo->finished == 1 || philo->god->dead >= 1)
+		{
+			pthread_mutex_unlock(&philo->god->end);
 			return (0);
+		}
+		pthread_mutex_unlock(&philo->god->end);
 		time_to_sleep(philo);
+		pthread_mutex_lock(&philo->god->end);
+		if (philo->god->dead >= 1)
+		{
+			pthread_mutex_unlock(&philo->god->end);
+			return (0);
+		}
+		pthread_mutex_unlock(&philo->god->end);
+	}
+	return (0);
+}
+
+void	*god_function(void *arg)
+{
+	t_philo	*philo;
+
+	philo = (t_philo *) arg;
+	while (philo->god->first_death_philo == 0)
+	{
+		pthread_mutex_lock(&philo->god->end);
+		if (philo->philo_state == 1)
+		{
+			philo->god->time_of_death = philo->time_of_death;
+			philo->god->first_death_philo = philo->no;
+		}
+		if (philo->god->finished == philo->infos->number_of_philosophers)
+		{
+			pthread_mutex_unlock(&philo->god->end);
+			return (0);
+		}
+		pthread_mutex_unlock(&philo->god->end);
+		philo = philo->right_philo;
 	}
 	return (0);
 }
@@ -57,7 +93,7 @@ int	life_of_philosopher(t_philo *philo, t_infos *infos)
 	n = 1;
 	while (n <= infos->number_of_philosophers)
 	{
-		if (pthread_join(philo->pt_philo, NULL) != 0)
+		if (pthread_detach(philo->pt_philo) != 0)
 		{
 			clear_philo(philo);
 			return (printf("Impossible to wait for the thread"), 1);
@@ -66,26 +102,6 @@ int	life_of_philosopher(t_philo *philo, t_infos *infos)
 		n ++;
 	}
 	return (0); 
-}
-
-void	god_function(t_god *god, t_philo *philo)
-{
-	pthread_mutex_lock(&god->end);
-	while (god->first_death_philo == 0)
-	{
-		if (philo->philo_state == 1)
-		{
-			god->time_of_death = philo->time_of_death;
-			god->first_death_philo = philo->no;
-		}
-		if (god->finished == philo->infos->number_of_philosophers)
-		{
-			usleep(1000);
-			return ;
-		}
-		philo = philo->right_philo;
-	}
-	pthread_mutex_unlock(&god->end);
 }
 
 void	free_all(t_philo *philo, t_infos *infos, t_god *god)
@@ -116,7 +132,7 @@ int	main(int argc, char **argv)
 			return (1);
 		if (life_of_philosopher(philo, infos) == 1)
 			return (1);
-		god_function(god, philo);
+		god_function(philo);
 		if (god->first_death_philo != 0)
 			printf("%lld %d died\n", god->time_of_death, god->first_death_philo);
 		free_all(philo, infos, god);
