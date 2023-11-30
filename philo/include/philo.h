@@ -6,7 +6,7 @@
 /*   By: vst-pier <vst-pier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 12:57:27 by vst-pier          #+#    #+#             */
-/*   Updated: 2023/11/29 13:57:02 by vst-pier         ###   ########.fr       */
+/*   Updated: 2023/11/30 13:54:05 by vst-pier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ typedef struct s_god
 	t_ull				time_of_death;
 	int					finished;
 	pthread_mutex_t		end;
+	struct s_philo		*philo;
 	int					dead;
 	pthread_t			pt_god;
 	pthread_mutex_t		printf;
@@ -76,5 +77,6 @@ t_ull	find_time(void);
 void	*ft_calloc(size_t count, size_t size);
 int		ft_isdigit(int c);
 void	state(t_philo *philo, char *s, t_ull current_time);
+int		is_it_finished(t_philo *philo);
 
 #endif

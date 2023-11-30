@@ -6,7 +6,7 @@
 /*   By: vst-pier <vst-pier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 15:12:49 by vst-pier          #+#    #+#             */
-/*   Updated: 2023/11/29 13:55:38 by vst-pier         ###   ########.fr       */
+/*   Updated: 2023/11/30 14:07:26 by vst-pier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,3 +30,4 @@ void	state(t_philo *philo, char *s, t_ull current_time)
 	printf("%lld %d %s\n", current_time, philo->no, s);
 	pthread_mutex_unlock(&philo->god->printf);
 }
+

@@ -6,7 +6,7 @@
 /*   By: vst-pier <vst-pier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 11:21:48 by vst-pier          #+#    #+#             */
-/*   Updated: 2023/11/27 15:32:56 by vst-pier         ###   ########.fr       */
+/*   Updated: 2023/11/30 13:56:25 by vst-pier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ t_god	*initialize_god(t_infos *infos)
 	god = ft_calloc(1, sizeof(t_god));
 	god->first_death_philo = 0;
 	god->time_of_death = 0;
-	god->dead = 0;
 	if (pthread_mutex_init(&god->end, NULL) != 0)
 	{
 		free(infos);
@@ -83,7 +82,7 @@ t_philo	*initialize_philo(t_infos *infos, t_god *god, int no)
 		return (NULL);
 	}
 	philo->finished = 0;
-	philo->meal_eaten = -1;
+	philo->meal_eaten = 0;
 	philo->infos = infos;
 	philo->right_philo = NULL;
 	philo->thinking = 0;
@@ -109,17 +108,4 @@ t_philo	*create_philo(t_infos *infos, t_god *god)
 	}
 	philo->right_philo = head;
 	return (head);
-}
-
-void	time_to_start(t_philo *philo)
-{
-	while (philo->meal_eaten == -1)
-	{
-		pthread_mutex_lock(&philo->infos->start);
-		philo->meal_eaten = 0;
-		if (philo->infos->start_time == 0)
-			philo->infos->start_time = find_time();
-		pthread_mutex_unlock(&philo->infos->start);
-	}
-	philo->last_meal = 0;
 }
